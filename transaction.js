@@ -163,6 +163,14 @@ class Transaction {
         if (this.header_pos > 0) this.reset_headers();
     }
 
+    change_header (key, value) {
+        this.header.change(key, value);
+    };
+
+    change_or_add_header (key, value) {
+        this.header.change_or_add(key, value);
+    };
+
     reset_headers () {
         const header_lines = this.header.lines();
         this.header_pos = header_lines.length;

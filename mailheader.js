@@ -159,6 +159,43 @@ class Header {
         this.headers_decoded[key][method](val);
     }
 
+    _change_header (key, value) {
+        var key_lower=key.toLowerCase()
+        this.headers[key_lower]=[value];
+        var key_len = key.length;
+        for (var i=0,l=this.header_list.length; i < l; i++) {
+            if (this.header_list[i].substring(0, key_len).toLowerCase() === key_lower) {
+                this.header_list[i]=key + ': ' + value + '\n';
+            }
+        }
+    }
+
+    _change_header_decode (key, value) {
+        this.headers_decoded[key]=[value];
+    }
+
+    change_or_add (key, value) {
+        if (!key) key = 'X-Haraka-Blank';
+        if (this.headers.hasOwnProperty(key.toLowerCase())) {
+            this.change (key, value);
+            this.change (key, value);
+        } else {
+            this.add_end (key, value);
+        }
+    }
+
+    change (key, value) {
+        if (!key) key = 'X-Haraka-Blank';
+        value = value.replace(/(\r?\n)*$/, '');
+        if (/[^\x00-\x7f]/.test(value)) {
+            // Need to QP encode this header value and assume UTF-8
+            value = '=?UTF-8?q?' + utils.encode_qp(value) + '?=';
+            value = value.replace(/=\n/g, ''); // remove wraps - headers can only wrap at whitespace (wit
+        }
+        this._change_header (key, value);
+        this._change_header_decode (key, value);
+    }
+
     add_end (key, value) {
         if (!key) key = 'X-Haraka-Blank';
         value = value.replace(/(\r?\n)*$/, '');

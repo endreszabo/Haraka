@@ -1450,9 +1450,15 @@ class Connection {
             }
         }
 
-        let received_header = `from ${this.hello.host} (${this.get_remote('info')})
+		if (this.transaction.notes.fake_received_header)) {
+			let received_header = `from ${this.transaction.notes.fake_received_header}
+\tby ${this.local.host} with ${smtp} id ${this.transaction.uuid}`;
+		}
+		else {
+			let received_header = `from ${this.hello.host} (${this.get_remote('info')})
 \tby ${this.local.host} (${this.local.info}) with ${smtp} id ${this.transaction.uuid}
 \tenvelope-from ${this.transaction.mail_from.format()}`;
+		}
 
         if (this.authheader) received_header += ` ${this.authheader.replace(/\r?\n\t?$/, '')}`
         if (sslheader)       received_header += `\n\t${sslheader.replace(/\r?\n\t?$/,'')}`

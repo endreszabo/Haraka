@@ -179,8 +179,10 @@ exports.hook_queue_outbound = exports.hook_pre_send_trans_email = function (next
         let domain;
         let selector;
         let private_key;
+        const txn = connection.transaction;
         if (!keydir) {
             domain = plugin.cfg.main.domain;
+			domain = txn.mail_from.host;
             private_key = plugin.private_key;
             selector = plugin.cfg.main.selector;
         }
@@ -194,7 +196,6 @@ exports.hook_queue_outbound = exports.hook_pre_send_trans_email = function (next
         connection.logdebug(plugin, 'dkim_domain: ' + domain);
 
         const headers_to_sign = plugin.get_headers_to_sign();
-        const txn = connection.transaction;
 
         function dkimCallback (err2, dkim_header) {
             if (err2) {
