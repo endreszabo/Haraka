@@ -1450,7 +1450,7 @@ class Connection {
             }
         }
 
-		if (this.transaction.notes.fake_received_header)) {
+		if (this.transaction.notes.fake_received_header) {
 			let received_header = `from ${this.transaction.notes.fake_received_header}
 \tby ${this.local.host} with ${smtp} id ${this.transaction.uuid}`;
 		}
